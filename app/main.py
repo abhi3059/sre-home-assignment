@@ -13,12 +13,10 @@ from contextlib import asynccontextmanager
 from app.database import connect_to_db 
 from app.redis_client import connect_to_redis, REDIS_TTL
 from app.metrics import instrumentator, character_processed, cache_hits, request_latency, redis_failures
-from app.tracing import setup_tracing
+from app.tracing import setup_tracer
 from app.exceptions import setup_exception_handlers, _rate_limit_exceeded_handler, RateLimitExceeded
 from app.utils import fetch_url, store_in_db
-
-
-
+ 
 # --- Logging Configuration ---
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("rickmorty-api")
@@ -26,9 +24,20 @@ logger = logging.getLogger("rickmorty-api")
 # --- Lifespan handler ---
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    app.state.db_conn = await connect_to_db()
-    app.state.redis = await connect_to_redis()
+    try:
+        app.state.db_conn = await connect_to_db()
+    except Exception as e:
+        logger.error("Database connection failed: %s", e)
+        app.state.db_conn = None
+
+    try:
+        app.state.redis = await connect_to_redis()
+    except Exception as e:
+        logger.error("Redis connection failed: %s", e)
+        app.state.redis = None
+
     yield
+
     if app.state.db_conn:
         await app.state.db_conn.close()
     if app.state.redis:
@@ -38,7 +47,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 # --- Tracing ---
-setup_tracing(app)
+setup_tracer(app)
 
 # --- Metrics ---
 instrumentator.instrument(app).expose(app)
@@ -73,13 +82,15 @@ async def get_characters(
     sort_by: Optional[str] = Query("id", pattern="^(id|name)$"),
     sort_order: Optional[str] = Query("asc", pattern="^(asc|desc)$")
 ):
+    redis_client = request.app.state.redis
     try:
         cache_key = f"characters_page_{page}_limit_{limit}_sortby_{sort_by}_order_{sort_order}"
-        cached = redis_client.get(cache_key)
-        if cached:
-            logger.info("Cache hit for key: %s", cache_key)
-            cache_hits.inc()
-            return json.loads(cached)
+        if redis_client:
+            cached = await redis_client.get(cache_key)
+            if cached:
+                logger.info("Cache hit for key: %s", cache_key)
+                cache_hits.inc()
+                return json.loads(cached)
 
         filtered = []
         url = f"{RICK_AND_MORTY_API}?page={page}"
@@ -106,8 +117,10 @@ async def get_characters(
             reverse=(sort_order == "desc")
         )[:limit]
 
-        redis_client.setex(cache_key, REDIS_TTL, json.dumps(sorted_data))
-        logger.info("Cache set for key: %s", cache_key)
+        if redis_client:
+            await redis_client.setex(cache_key, REDIS_TTL, json.dumps(sorted_data))
+            logger.info("Cache set for key: %s", cache_key)
+
         return sorted_data
 
     except httpx.HTTPStatusError as e:
@@ -121,23 +134,29 @@ async def get_characters(
         logger.exception("Unexpected error")
         raise HTTPException(status_code=500, detail="Internal server error")
 
+
 @app.get("/healthcheck")
-async def healthcheck():
+async def healthcheck(request: Request):
     health = {"database": False, "redis": False}
+
     try:
-        conn = app.state.db_conn
-        result = await conn.fetchval("SELECT 1")
-        if result == 1:
-            health["database"] = True
+        db_conn = request.app.state.db_conn
+        if db_conn:
+            result = await db_conn.fetchval("SELECT 1")
+            if result == 1:
+                health["database"] = True
     except Exception as e:
         logger.error("Database healthcheck failed: %s", e)
 
     try:
-        redis_client.ping()
-        health["redis"] = True
+        redis_client = request.app.state.redis
+        if redis_client:
+            pong = await redis_client.ping()
+            if pong:
+                health["redis"] = True
     except Exception as e:
         logger.error("Redis healthcheck failed: %s", e)
 
     status = 200 if all(health.values()) else 503
     return JSONResponse(status_code=status, content=health)
-
+ 
