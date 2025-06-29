@@ -10,8 +10,8 @@ from slowapi import Limiter
 from slowapi.util import get_remote_address
 from contextlib import asynccontextmanager
 
-from app.database import connect_to_db
-from app.redis_client import redis_client, REDIS_TTL
+from app.database import connect_to_db 
+from app.redis_client import connect_to_redis, REDIS_TTL
 from app.metrics import instrumentator, character_processed, cache_hits, request_latency, redis_failures
 from app.tracing import setup_tracing
 from app.exceptions import setup_exception_handlers, _rate_limit_exceeded_handler, RateLimitExceeded
@@ -27,8 +27,12 @@ logger = logging.getLogger("rickmorty-api")
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     app.state.db_conn = await connect_to_db()
+    app.state.redis = await connect_to_redis()
     yield
-    await app.state.db_conn.close()
+    if app.state.db_conn:
+        await app.state.db_conn.close()
+    if app.state.redis:
+        await app.state.redis.close()
 
 # --- App Initialization ---
 app = FastAPI(lifespan=lifespan)
