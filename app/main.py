@@ -10,13 +10,13 @@ from slowapi import Limiter
 from slowapi.util import get_remote_address
 from contextlib import asynccontextmanager
 
-from app.database import connect_to_db 
+from app.database import connect_to_db
 from app.redis_client import connect_to_redis, REDIS_TTL
 from app.metrics import instrumentator, character_processed, cache_hits, request_latency, redis_failures
 from app.tracing import setup_tracer
-from app.exceptions import setup_exception_handlers, _rate_limit_exceeded_handler, RateLimitExceeded
+from app.exceptions import setup_exception_handlers, RateLimitExceeded
 from app.utils import fetch_url, store_in_db
- 
+
 # --- Logging Configuration ---
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("rickmorty-api")
@@ -55,7 +55,6 @@ instrumentator.instrument(app).expose(app)
 # --- Rate Limiting ---
 limiter = Limiter(key_func=get_remote_address)
 app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # --- Exception Handlers ---
 setup_exception_handlers(app)
@@ -159,4 +158,3 @@ async def healthcheck(request: Request):
 
     status = 200 if all(health.values()) else 503
     return JSONResponse(status_code=status, content=health)
- 

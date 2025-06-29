@@ -35,3 +35,6 @@ def setup_exception_handlers(app):
             status_code=500,
             content={"error": "Internal server error"},
         )
+
+# Exported for use in main.py
+__all__ = ["setup_exception_handlers", "RateLimitExceeded"]
