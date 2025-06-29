@@ -9,6 +9,7 @@ from pydantic import BaseModel
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from contextlib import asynccontextmanager
+from time import time  
 
 from app.database import connect_to_db
 from app.redis_client import connect_to_redis, REDIS_TTL
@@ -70,10 +71,11 @@ class Character(BaseModel):
     species: str
     origin: str
 
+
+
 # --- Endpoints ---
 @app.get("/characters", response_model=List[Character])
 @limiter.limit("100/minute")
-@request_latency.time()
 async def get_characters(
     request: Request,
     page: int = Query(1, ge=1),
@@ -81,6 +83,7 @@ async def get_characters(
     sort_by: Optional[str] = Query("id", pattern="^(id|name)$"),
     sort_order: Optional[str] = Query("asc", pattern="^(asc|desc)$")
 ):
+    start_time = time()
     redis_client = request.app.state.redis
     db_conn = request.app.state.db_conn
 
@@ -135,6 +138,8 @@ async def get_characters(
     except Exception as e:
         logger.exception("Unexpected error")
         raise HTTPException(status_code=500, detail="Internal server error")
+    finally:
+        request_latency.observe(time() - start_time)
 
 
 @app.get("/healthcheck")
