@@ -1,3 +1,5 @@
+import os
+os.environ["OTEL_SDK_DISABLED"] = "true"
 import pytest
 from fastapi.testclient import TestClient
 from app.main import app
