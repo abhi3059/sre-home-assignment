@@ -1,0 +1,26 @@
+groups:
+  - name: fastapi-alerts
+    rules:
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.05
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High error rate detected"
+
+      - alert: PodCrashLooping
+        expr: increase(kube_pod_container_status_restarts_total[10m]) > 3
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Container has restarted too many times"
+
+      - alert: LatencySpike
+        expr: histogram_quantile(0.95, rate(app_request_latency_seconds_bucket[5m])) > 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Request latency (95th percentile) > 1s"

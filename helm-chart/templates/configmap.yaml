@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "fastapi-app.fullname" . }}-config
+  labels:
+    app: {{ include "fastapi-app.name" . }}
+data:
+  REDIS_HOST: "{{ .Values.env.REDIS_HOST }}"
+  REDIS_PORT: "{{ .Values.env.REDIS_PORT }}"
+  REDIS_TTL: "{{ .Values.env.REDIS_TTL }}"
+  DB_NAME: "{{ .Values.env.DB_NAME }}"
+  DB_HOST: "{{ .Values.env.DB_HOST }}"
+  DB_PORT: "{{ .Values.env.DB_PORT }}"

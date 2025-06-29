@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "fastapi-app.fullname" . }}
+  labels:
+    app: {{ include "fastapi-app.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "fastapi-app.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "fastapi-app.name" . }}
+    spec:
+      serviceAccountName: app-service-account
+      containers:
+        - name: fastapi
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: {{ include "fastapi-app.fullname" . }}-config
+          env:
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.userSecretRef }}
+                  key: {{ .Values.database.userKey }}
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.userSecretRef }}
+                  key: {{ .Values.database.passwordKey }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+
+        - name: fluentd
+          image: fluent/fluentd:v1.14-1
+          env:
+            - name: FLUENTD_ARGS
+              value: "--no-supervisor -q"
+          volumeMounts:
+            - name: varlog
+              mountPath: /var/log
+
+      volumes:
+        - name: varlog
+          hostPath:
+            path: /var/log

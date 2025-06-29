@@ -1,0 +1,6 @@
+apiVersion: v2
+name: fastapi-app
+version: 0.1.0
+appVersion: "1.0"
+description: Helm chart for FastAPI Rick and Morty App
+

@@ -1,0 +1,99 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  REGISTRY: docker.io
+  IMAGE_NAME: ${{ github.repository }}
+  KIND_CLUSTER: kind
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run unit tests
+        run: pytest tests/
+
+      - name: Lint code with flake8
+        run: |
+          pip install flake8
+          flake8 .
+
+      - name: Security scan with Bandit
+        run: |
+          pip install bandit
+          bandit -r .
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+
+  deploy-to-kind:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up KinD
+        uses: helm/kind-action@v1.8.0
+        with:
+          wait: 120s
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'v1.27.0'
+
+      - name: Create namespace
+        run: kubectl create namespace fastapi || true
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v3
+
+      - name: Deploy using Helm
+        run: |
+          helm upgrade --install fastapi-app ./helm-chart \
+            --namespace fastapi \
+            --create-namespace \
+            --set image.repository=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} \
+            --set image.tag=latest \
+            --wait
+
+      - name: Wait for app to become ready
+        run: kubectl wait --namespace fastapi --for=condition=ready pod --selector=app=fastapi-app --timeout=180s
+
+      - name: Run integration test
+        run: |
+          kubectl port-forward svc/fastapi-app 8000:80 -n fastapi &
+          sleep 10
+          curl --fail http://localhost:8000/healthcheck

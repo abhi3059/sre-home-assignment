@@ -1,0 +1,127 @@
+openapi: 3.0.3
+info:
+  title: Rick and Morty Character API
+  version: "1.0.0"
+  description: API to retrieve filtered Rick and Morty characters with caching and persistence.
+
+servers:
+  - url: http://localhost:8000
+    description: Local Development Server
+
+paths:
+  /characters:
+    get:
+      summary: Get filtered Rick and Morty characters
+      description: >
+        Fetches characters that are Human, Alive, and from any variant of Earth. 
+        Supports pagination and sorting.
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+          description: Page number (starting from 1)
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+          description: Number of characters per page (max 50)
+        - in: query
+          name: sort_by
+          schema:
+            type: string
+            enum: [id, name]
+          description: Sort by ID or name
+        - in: query
+          name: sort_order
+          schema:
+            type: string
+            enum: [asc, desc]
+          description: Sort order (ascending or descending)
+      responses:
+        "200":
+          description: Filtered characters retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Character"
+        "400":
+          description: Invalid query parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Too many requests (rate limit exceeded)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: Redis unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /healthcheck:
+    get:
+      summary: Health check
+      description: Returns status of database and Redis connections.
+      responses:
+        "200":
+          description: All systems operational
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  database:
+                    type: boolean
+                  redis:
+                    type: boolean
+        "503":
+          description: One or more dependencies are unavailable
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  database:
+                    type: boolean
+                  redis:
+                    type: boolean
+
+components:
+  schemas:
+    Character:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        status:
+          type: string
+        species:
+          type: string
+        origin:
+          type: string
+      required: [id, name, status, species, origin]
+
+    ErrorResponse:
+      type: object
+      properties:
+        detail:
+          type: string

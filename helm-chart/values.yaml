@@ -1,0 +1,47 @@
+replicaCount: 2
+
+image:
+  repository: your-dockerhub-username/fastapi-app
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  hosts:
+    - host: fastapi.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - hosts:
+        - fastapi.local
+      secretName: fastapi-tls
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+# Non-sensitive config (used in ConfigMap)
+cache:
+  host: redis
+  port: "6379"        # Quoted to ensure consistent type in ConfigMap
+  ttl: "3600"         # Quoted to ensure consistent type in ConfigMap
+
+database:
+  host: postgres
+  port: "5432"        # Quoted for consistency
+  name: rickmorty
+  userSecretRef: db-secret
+  userKey: username
+  passwordKey: password
