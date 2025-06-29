@@ -8,8 +8,9 @@ from redis.exceptions import ConnectionError as RedisConnectionError
 from pydantic import BaseModel
 from slowapi import Limiter
 from slowapi.util import get_remote_address
+from contextlib import asynccontextmanager
 
-from app.database import db_cursor, db_conn
+from app.database import connect_to_db
 from app.redis_client import redis_client, REDIS_TTL
 from app.metrics import instrumentator, character_processed, cache_hits, request_latency, redis_failures
 from app.tracing import setup_tracing
@@ -22,8 +23,15 @@ from app.utils import fetch_url, store_in_db
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("rickmorty-api")
 
+# --- Lifespan handler ---
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    app.state.db_conn = await connect_to_db()
+    yield
+    await app.state.db_conn.close()
+
 # --- App Initialization ---
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 
 # --- Tracing ---
 setup_tracing(app)
@@ -110,12 +118,12 @@ async def get_characters(
         raise HTTPException(status_code=500, detail="Internal server error")
 
 @app.get("/healthcheck")
-def healthcheck():
+async def healthcheck():
     health = {"database": False, "redis": False}
     try:
-        if db_cursor:
-            db_cursor.execute("SELECT 1")
-            db_conn.commit()
+        conn = app.state.db_conn
+        result = await conn.fetchval("SELECT 1")
+        if result == 1:
             health["database"] = True
     except Exception as e:
         logger.error("Database healthcheck failed: %s", e)
@@ -128,3 +136,4 @@ def healthcheck():
 
     status = 200 if all(health.values()) else 503
     return JSONResponse(status_code=status, content=health)
+
