@@ -1,9 +1,11 @@
 import pytest
+import os
 import json
 from unittest.mock import AsyncMock
 from fastapi.testclient import TestClient
-from app.main import app
 
+os.environ["OTEL_SDK_DISABLED"] = "true"
+from app.main import app
 
 @pytest.fixture
 def test_client_with_mocks():
