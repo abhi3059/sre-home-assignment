@@ -16,8 +16,7 @@ def setup_tracer(app):
     jaeger_port = int(os.getenv("JAEGER_PORT", 4318))
 
     otlp_exporter = OTLPSpanExporter(
-        endpoint=f"http://{jaeger_host}:{jaeger_port}/v1/traces",
-        protocol="http/protobuf"
+        endpoint=f"http://{jaeger_host}:{jaeger_port}/v1/traces"
     )
 
     trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(otlp_exporter))
