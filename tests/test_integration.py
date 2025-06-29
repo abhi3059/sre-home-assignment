@@ -11,4 +11,4 @@ def is_api_up():
 @pytest.mark.skipif(not is_api_up(), reason="API is not running on localhost:8000")
 def test_api_live():
     response = requests.get("http://localhost:8000/characters?page=1&limit=1", timeout=5)
-    assert response.status_code == 200
+    assert response.status_code == 200  # nosec B101
