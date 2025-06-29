@@ -9,12 +9,12 @@ from pydantic import BaseModel
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 
-from database import db_cursor, db_conn
-from redis_client import redis_client, REDIS_TTL
-from metrics import instrumentator, character_processed, cache_hits, request_latency, redis_failures
-from tracing import setup_tracing
-from exceptions import setup_exception_handlers, _rate_limit_exceeded_handler, RateLimitExceeded
-from utils import fetch_url, store_in_db
+from app.database import db_cursor, db_conn
+from app.redis_client import redis_client, REDIS_TTL
+from app.metrics import instrumentator, character_processed, cache_hits, request_latency, redis_failures
+from app.tracing import setup_tracing
+from app.exceptions import setup_exception_handlers, _rate_limit_exceeded_handler, RateLimitExceeded
+from app.utils import fetch_url, store_in_db
 
 
 
