@@ -84,6 +84,9 @@ jobs:
       - name: Create namespace
         run: kubectl create namespace fastapi || true
 
+      - name: Create service account
+        run: kubectl create serviceaccount app-service-account -n fastapi || true
+
       - name: Set up Helm
         uses: azure/setup-helm@v3
 
