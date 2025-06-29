@@ -82,6 +82,8 @@ async def get_characters(
     sort_order: Optional[str] = Query("asc", pattern="^(asc|desc)$")
 ):
     redis_client = request.app.state.redis
+    db_conn = request.app.state.db_conn
+
     try:
         cache_key = f"characters_page_{page}_limit_{limit}_sortby_{sort_by}_order_{sort_order}"
         if redis_client:
@@ -106,7 +108,8 @@ async def get_characters(
                         "species": character["species"],
                         "origin": character["origin"]["name"]
                     }
-                    store_in_db(character)
+                    if db_conn:
+                        await store_in_db(character, db_conn)
                     filtered.append(item)
                     character_processed.inc()
 
