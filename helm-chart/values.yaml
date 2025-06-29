@@ -32,7 +32,7 @@ resources:
     cpu: 250m
     memory: 256Mi
 
-# New unified env block expected by Helm templates (e.g. for ConfigMap)
+# Non-sensitive environment config for ConfigMap
 env:
   REDIS_HOST: redis
   REDIS_PORT: "6379"
@@ -40,6 +40,9 @@ env:
   DB_HOST: postgres
   DB_PORT: "5432"
   DB_NAME: rickmorty
-  DB_USER_SECRET_REF: db-secret
-  DB_USER_KEY: username
-  DB_PASSWORD_KEY: password
+
+# Sensitive data to be mounted from secrets
+database:
+  userSecretRef: db-secret
+  userKey: username
+  passwordKey: password
