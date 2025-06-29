@@ -46,7 +46,7 @@ jobs:
       - name: Security scan with Bandit
         run: |
           pip install bandit
-          bandit -r . --exclude tests/
+          bandit -r . --skip B101
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
