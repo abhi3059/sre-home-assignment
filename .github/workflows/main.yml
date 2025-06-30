@@ -98,6 +98,19 @@ jobs:
       - name: Wait for app to become ready
         run: kubectl wait --namespace fastapi --for=condition=ready pod --selector=app=fastapi-app --timeout=180s
 
+      - name: Install Metrics Server for HPA
+        run: |
+          kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+          kubectl patch deployment metrics-server -n kube-system \
+            --type=json -p='[{"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--kubelet-insecure-tls"}]'
+          sleep 30
+
+      - name: Verify HPA and metrics API
+        run: |
+          kubectl get hpa -n fastapi
+          kubectl describe hpa fastapi-app -n fastapi
+          kubectl top pods -n fastapi || echo "Metrics not ready yet"
+
       - name: Run integration test
         run: |
           kubectl port-forward svc/fastapi-app 8000:80 -n fastapi &
