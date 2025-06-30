@@ -1,5 +1,5 @@
 # ──────────────── Stage 1: Builder ────────────────
-FROM python:3.12-slim AS builder
+FROM python:3.11-slim AS builder
 
 # Set environment variables to avoid interactive installs and ensure reliability
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -16,7 +16,7 @@ COPY requirements.txt .
 RUN pip install --upgrade pip && pip install --user -r requirements.txt
 
 # ──────────────── Stage 2: Final ────────────────
-FROM python:3.12-slim AS final
+FROM python:3.11-slim AS final
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
