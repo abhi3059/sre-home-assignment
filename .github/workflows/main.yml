@@ -87,6 +87,13 @@ jobs:
       - name: Set up Helm
         uses: azure/setup-helm@v3
 
+      - name: Install Metrics Server for HPA
+        run: |
+          kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+          kubectl patch deployment metrics-server -n kube-system \
+            --type=json -p='[{"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--kubelet-insecure-tls"}]'
+          kubectl rollout status deployment/metrics-server -n kube-system --timeout=90s
+
       - name: Deploy using Helm
         run: |
           helm upgrade --install fastapi-app ./helm-chart \
@@ -97,13 +104,6 @@ jobs:
 
       - name: Wait for app to become ready
         run: kubectl wait --namespace fastapi --for=condition=ready pod --selector=app=fastapi-app --timeout=180s
-
-      - name: Install Metrics Server for HPA
-        run: |
-          kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
-          kubectl patch deployment metrics-server -n kube-system \
-            --type=json -p='[{"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--kubelet-insecure-tls"}]'
-          sleep 30
 
       - name: Verify HPA and metrics API
         run: |
