@@ -1,7 +1,7 @@
 replicaCount: 2
 
 image:
-  repository: your-dockerhub-username/fastapi-app
+  repository: abhi3059/fastapi-app
   tag: latest
   pullPolicy: IfNotPresent
 
