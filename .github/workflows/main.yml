@@ -94,6 +94,10 @@ jobs:
             --type=json -p='[{"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--kubelet-insecure-tls"}]'
           kubectl rollout status deployment/metrics-server -n kube-system --timeout=90s
 
+      - name: Delete existing ServiceAccount (if any)
+        run: |
+          kubectl delete serviceaccount app-service-account -n fastapi --ignore-not-found
+
       - name: Deploy using Helm
         run: |
           helm upgrade --install fastapi-app ./helm-chart \
