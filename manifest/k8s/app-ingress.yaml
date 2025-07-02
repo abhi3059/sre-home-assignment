@@ -2,7 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: fastapi-ingress
-  namespace: ingress-nginx
+  namespace: fastapi  
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/rewrite-target: /$1
@@ -17,6 +17,5 @@ spec:
             backend:
               service:
                 name: fastapi-app
-                namespace: fastapi
                 port:
                   number: 80
