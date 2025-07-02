@@ -46,3 +46,7 @@ database:
   userSecretRef: db-secret
   userKey: username
   passwordKey: password
+
+serviceAccount:
+  create: true
+  name: app-service-account
