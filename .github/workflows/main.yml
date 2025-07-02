@@ -114,8 +114,8 @@ jobs:
 
       - name: Run integration test
         run: |
-          # Wait for services to be ready
-          sleep 10
+          kubectl port-forward --namespace ingress-nginx svc/ingress-nginx-controller 8443:443 &
+          sleep 5  # Give port-forward time to establish
+          
+          curl -k -H "Host: fastapi.local" https://localhost:8443/healthcheck
 
-          # Run test against the HTTPS Ingress endpoint
-          curl -k -H "Host: fastapi.local" https://localhost/healthcheck
