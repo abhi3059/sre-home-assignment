@@ -45,6 +45,11 @@ async def lifespan(app: FastAPI):
         logger.error("Redis connection failed: %s", e)
         app.state.redis = None
 
+    # --- Force register metrics after all systems are initialized ---
+    cache_hits.inc(0)
+    cache_misses.inc(0)
+    cache_hit_ratio.set(0.0)
+
     yield
 
     if app.state.db_conn:
