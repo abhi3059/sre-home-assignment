@@ -221,8 +221,7 @@ GET /characters?page=1&limit=5&sort=name
 Performs checks for:
 
 - ✅ Redis connection  
-- ✅ PostgreSQL status  
-- ✅ External Rick & Morty API availability  
+- ✅ PostgreSQL status 
 
 ### 🧾 Example Response
 
@@ -244,15 +243,15 @@ Performs checks for:
   - `cache_hit_ratio`
   - `http_request_duration_seconds`
 
-➡️ Dashboard exported as: `docs/grafana-dashboard.json`
+➡️ Dashboard exported as: `/observability/grafana/grafana-dashboard.json`
 
 ### 📈 Tracing
 
-- Integrated with **OpenTelemetry** and **Jaeger** for distributed tracing.
+- Integrated with **OpenTelemetry** 
 
 ### 🚨 Alerts
 
-Defined in `PrometheusRule`:
+Defined in `PrometheusRule`: http://172.236.172.53:30000/alerts
 
 - **HighErrorRate**: HTTP 5xx error rate > 5%
 - **LatencySpike**: P95 latency > 500ms
@@ -261,7 +260,7 @@ Defined in `PrometheusRule`:
 
 ## 🔁 CI/CD Pipeline
 
-GitHub Actions workflow: `.github/workflows/ci.yml`
+GitHub Actions workflow: `.github/workflows/main.yml`
 
 ### ✅ Pipeline Steps
 
