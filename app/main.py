@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.responses import JSONResponse
 from typing import List, Optional
