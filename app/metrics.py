@@ -1,4 +1,4 @@
-from prometheus_client import Counter, Summary, Histogram, Gauge ,REGISTRY
+from prometheus_client import Counter, Summary, Histogram, Gauge 
 from prometheus_fastapi_instrumentator import Instrumentator
 
 # --- Prometheus FastAPI Instrumentation ---
@@ -48,10 +48,3 @@ cache_hit_ratio = Gauge(
     "Cache hit ratio = hits / (hits + misses)"
 )
 
-
-# --- Register business metrics ---
-REGISTRY.register(cache_hits)
-REGISTRY.register(cache_misses)
-REGISTRY.register(character_processed)
-REGISTRY.register(redis_failures)
-REGISTRY.register(cache_hit_ratio)
