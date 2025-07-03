@@ -55,6 +55,11 @@ async def lifespan(app: FastAPI):
 # --- App Initialization ---
 app = FastAPI(lifespan=lifespan)
 
+# --- Force register metrics on startup ---
+cache_hits.inc(0)
+cache_misses.inc(0)
+cache_hit_ratio.set(0.0)
+
 # --- Tracing ---
 setup_tracer(app)
 
