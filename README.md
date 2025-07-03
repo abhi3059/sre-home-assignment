@@ -45,6 +45,7 @@ graph TD
     AppPod --> Jaeger
     AppPod --> Metrics[Prometheus Exporter]
 ```
+---
 
 ## 🚀 Features
 
@@ -57,6 +58,8 @@ graph TD
 - **Horizontal Pod Autoscaling** & TLS Ingress
 - **GitHub Actions CI/CD** with `kind` + Helm
 - **Log aggregation sidecar** (Fluentd/Filebeat)
+
+---
 
 ## 🧰 Technology Stack
 
@@ -72,6 +75,8 @@ graph TD
 | Monitoring        | Prometheus, Grafana, OpenTelemetry, Jaeger  |
 | Logging           | Fluentd or Filebeat                         |
 | Rate Limiting     | SlowAPI / Custom Middleware                 |
+
+---
 
 ## 🧪 Setup & Deployment
 
@@ -93,7 +98,7 @@ After running the app locally with `docker-compose` or deploying it to Kubernete
 - **Metrics**: [http://localhost:8000/metrics](http://localhost:8000/metrics)  
 - **Health Check**: [http://localhost:8000/healthcheck](http://localhost:8000/healthcheck)
 
-## ☸️ Kubernetes Deployment (using Helm)
+### ☸️ Kubernetes Deployment (using Helm)
 
 ```bash
 # Prerequisites
@@ -106,6 +111,8 @@ helm upgrade --install rick-api ./charts/rick-api \
 
 kubectl get all -n rick-api
 ```
+
+---
 
 ## 📖 API Documentation
 
@@ -157,6 +164,8 @@ GET /characters?page=1&limit=5&sort=name
 }
 ```
 
+---
+
 ## 🩺 Health Check
 
 **Endpoint**: `GET /healthcheck`
@@ -177,6 +186,8 @@ Performs checks for:
   "external_api": "ok"
 }
 ```
+
+---
 
 ## 📊 Monitoring & Observability
 
