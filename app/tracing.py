@@ -7,8 +7,8 @@ from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExport
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
 def setup_tracer(app):
-    jaeger_host = os.getenv("JAEGER_HOST", "otel-collector.fastapi")
-    jaeger_port = int(os.getenv("JAEGER_PORT", 4318))
+    # Use OTEL standard environment variable for endpoint
+    otlp_endpoint = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://otel-collector.fastapi:4318")
 
     trace.set_tracer_provider(
         TracerProvider(
@@ -16,9 +16,7 @@ def setup_tracer(app):
         )
     )
 
-    otlp_exporter = OTLPSpanExporter(
-        endpoint=f"http://{jaeger_host}:{jaeger_port}/v1/traces"
-    )
+    otlp_exporter = OTLPSpanExporter(endpoint=otlp_endpoint)
 
     trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(otlp_exporter))
     FastAPIInstrumentor.instrument_app(app)
