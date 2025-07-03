@@ -7,22 +7,31 @@ Engineered with modern **SRE** and **DevOps** best practices — deployed on Kub
 
 ## 📚 Table of Contents
 
-- [✅ Overview](#✅-overview)
-- [🏗️ Architecture](#📐-architecture)
-- [🚀 Features](#🚀-features)
-- [🧰 Technology Stack](#🧰-technology-stack)
-- [🧪 Setup & Deployment](#🧪-setup--deployment)
-  - [⚙️ Local Development](#⚙️-local-development)
-  - [☸️ Kubernetes Deployment](#☸️-kubernetes-deployment-using-helm)
-- [📖 API Documentation](#📖-api-documentation)
-- [🩺 Health Check](#🩺-health-check)
-- [📊 Monitoring & Observability](#📊-monitoring--observability)
-- [🔁 CI/CD Pipeline](#🔁-cicd-pipeline)
-- [⚙️ Helm Chart Configuration](#⚙️-helm-chart-configuration)
-- [🧪 Testing](#🧪-testing-1)
-- [🔒 Security](#🔒-security)
-- [🤝 Contributing](#🤝-contributing)
-- [🪪 License](#🪪-license)
+- [✅ Overview](#✅-overview)  
+- [🏗️ Architecture](#🏗️-architecture)  
+- [🚀 Features](#🚀-features)  
+- [🧰 Technology Stack](#🧰-technology-stack)  
+- [🧪 Setup & Deployment](#🧪-setup--deployment)   
+- [🔗 Access Endpoints](#-access-endpoints)  
+- [📖 API Documentation](#-api-documentation)  
+  - [📖 API Typical Flow](#-api-typical-flow)  
+  - [📦 Sample Endpoint](#-sample-endpoint)  
+  - [🧮 Query Parameters](#-query-parameters)  
+  - [🧾 Sample JSON Response](#-sample-json-response)  
+  - [🧮 PostgreSQL Database](#-postgresql-database)  
+- [🩺 Health Check](#-health-check)  
+- [🔐 RBAC Validation](#-rbac-validation)  
+- [📈 HPA Testing for fastapi-App](#-hpa-testing-for-fastapi-app)  
+- [📊 Monitoring & Observability](#-monitoring--observability)  
+  - [📊 Grafana Access](#-grafana-access--credential)  
+  - [📈 Prometheus & Metrics](#-prometheus--metrics)  
+  - [📉 Tracing](#-tracing)  
+  - [🚨 Alerts](#-alerts)  
+- [⚙️ Helm Chart Configuration](#️-helm-chart-configuration)  
+- [🧪 Testing](#-testing-1)  
+- [🔒 Security](#-security)  
+- [📂 File Structure](#-file-structure) 
+- [🔁 CI/CD Pipeline](#-cicd-pipeline) 
 
 ---
 
@@ -79,8 +88,6 @@ Architecture
 
 
 ## 🧪 Setup & Deployment
-
-### ⚙️ Local Development
 
 ```bash
 # Prerequisites
@@ -481,7 +488,7 @@ pytest tests/test_api.py
 
 
 
-## 📊 File 
+## 📊 File Structure
 
 ```
 File Structure
