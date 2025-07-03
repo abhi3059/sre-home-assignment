@@ -7,16 +7,19 @@ from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExport
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
 def setup_tracer(app):
-    # Use OTEL standard environment variable for endpoint
-    otlp_endpoint = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://otel-collector.fastapi:4318")
-
     trace.set_tracer_provider(
         TracerProvider(
             resource=Resource.create({SERVICE_NAME: "rickmorty-api"})
         )
     )
 
-    otlp_exporter = OTLPSpanExporter(endpoint=otlp_endpoint)
+
+    otlp_endpoint = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://localhost:4318")
+
+
+    otlp_exporter = OTLPSpanExporter(
+        endpoint=otlp_endpoint
+    )
 
     trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(otlp_exporter))
     FastAPIInstrumentor.instrument_app(app)
