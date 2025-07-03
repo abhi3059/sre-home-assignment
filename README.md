@@ -443,10 +443,6 @@ Defined in `PrometheusRule`: http://172.236.172.53:30000/alerts
 - **CrashLoopBackoff**: More than 3 restarts within 5 minutes
 
 
-## 🔁 CI/CD Pipeline
-
-GitHub Actions workflow: `.github/workflows/main.yml`
-
 ### ✅ Pipeline Steps
 
 - ✅ Lint, Unit + Integration Tests  
@@ -549,10 +545,9 @@ SRE-HOME-ASSIGNMENT/
  
 ```
 
+## 🔁 CI/CD Pipeline
 
-## CI/CD Pipeline
-
-GitHub Actions workflow defined in `.github/workflows/main.yml`
+GitHub Actions workflow `.github/workflows/main.yml`
 
 - [View CI Status Badge](https://github.com/abhi3059/sre-home-assignment/actions/workflows/main.yml/badge.svg)
 - [Successful CI Run Log](https://github.com/abhi3059/sre-home-assignment/actions/runs/16057507228)
