@@ -1,33 +1,66 @@
 {
-    "title": "FastAPI SRE Dashboard",
-    "panels": [
-      {
-        "type": "graph",
-        "title": "Request Latency (95th Percentile)",
-        "targets": [
-          {
-            "expr": "histogram_quantile(0.95, rate(app_request_latency_seconds_bucket[5m]))"
-          }
-        ]
-      },
-      {
-        "type": "stat",
-        "title": "Characters Processed",
-        "targets": [
-          {
-            "expr": "app_characters_processed_total"
-          }
-        ]
-      },
-      {
-        "type": "stat",
-        "title": "Cache Hit Ratio",
-        "targets": [
-          {
-            "expr": "rate(app_cache_hits_total[5m]) / rate(http_requests_total[5m])"
-          }
-        ]
+  "title": "FastAPI SRE Dashboard",
+  "timezone": "browser",
+  "schemaVersion": 36,
+  "version": 1,
+  "refresh": "10s",
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Request Latency (95th Percentile)",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{namespace=\"default\"}[5m])) by (le))",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 0
       }
-    ]
-  }
-  
+    },
+    {
+      "type": "stat",
+      "title": "Characters Processed",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "app_characters_processed_total{namespace=\"default\"}",
+          "refId": "B"
+        }
+      ],
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 0,
+        "y": 9
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Cache Hit Ratio",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "rate(app_cache_hits_total{namespace=\"default\"}[5m]) / rate(http_requests_total{namespace=\"default\"}[5m])",
+          "refId": "C"
+        }
+      ],
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 12,
+        "y": 9
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent"
+        },
+        "overrides": []
+      }
+    }
+  ]
+}
