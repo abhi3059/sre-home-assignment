@@ -16,6 +16,10 @@ spec:
             severity: warning
           annotations:
             summary: High latency on API
+            description: >
+              The 95th percentile of request latency has exceeded 1 second over a 5-minute window.
+              This could be caused by backend slowness, database performance issues, or increased load.
+              Monitor system performance and investigate application response times.
 
         - alert: RedisFailuresSpike
           expr: increase(app_redis_failures_total[5m]) > 3
@@ -24,6 +28,10 @@ spec:
             severity: critical
           annotations:
             summary: Too many Redis failures
+            description: >
+              More than 3 Redis failures were recorded within 5 minutes.
+              This could indicate issues with the Redis service or network connectivity problems.
+              Persistent Redis failures can impact cache usage and overall application performance.
 
         - alert: CrashLoopingPods
           expr: kube_pod_container_status_restarts_total{container="fastapi"} > 3
@@ -32,3 +40,7 @@ spec:
             severity: critical
           annotations:
             summary: FastAPI container is restarting frequently
+            description: >
+              The FastAPI container has restarted more than 3 times within the last 5 minutes.
+              This may indicate crashes due to application errors, failed liveness probes, or resource limits being exceeded.
+              Investigate pod logs and container events to determine the root cause.
