@@ -102,6 +102,9 @@ async def get_characters(
         cache_key = f"characters_page_{page}_limit_{limit}_sortby_{sort_by}_order_{sort_order}"
         cached = None
 
+        logger.info(f"Redis client available: {redis_client is not None}")
+        logger.info(f"Trying to get key: {cache_key}")
+
         if redis_client:
             cached = await redis_client.get(cache_key)
             if cached:
