@@ -22,4 +22,3 @@ def setup_tracer(app):
     span_processor = BatchSpanProcessor(otlp_exporter)
     trace.get_tracer_provider().add_span_processor(span_processor)
     FastAPIInstrumentor().instrument_app(app)
-
