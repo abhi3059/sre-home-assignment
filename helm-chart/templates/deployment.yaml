@@ -39,6 +39,18 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.database.userSecretRef }}
                   key: {{ .Values.database.passwordKey }}
+            - name: DB_HOST
+              value: {{ .Values.env.DB_HOST | quote }}
+            - name: DB_PORT
+              value: {{ .Values.env.DB_PORT | quote }}
+            - name: DB_NAME
+              value: {{ .Values.env.DB_NAME | quote }}
+            - name: REDIS_HOST
+              value: {{ .Values.env.REDIS_HOST | quote }}
+            - name: REDIS_PORT
+              value: {{ .Values.env.REDIS_PORT | quote }}
+            - name: CACHE_TTL
+              value: {{ .Values.env.CACHE_TTL | quote }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
 
