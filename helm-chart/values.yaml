@@ -50,3 +50,18 @@ database:
 serviceAccount:
   create: true
   name: app-service-account
+
+# -- Prometheus Rule Integration --
+prometheus:
+  prometheusSpec:
+    ruleFiles:
+      - /etc/prometheus/alert.rules.yaml
+    extraVolumes:
+      - name: custom-rules
+        configMap:
+          name: prometheus-alert-rules
+    extraVolumeMounts:
+      - name: custom-rules
+        mountPath: /etc/prometheus/alert.rules.yaml
+        subPath: alert.rules.yaml
+        readOnly: true

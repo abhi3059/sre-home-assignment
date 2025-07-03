@@ -1,0 +1,29 @@
+groups:
+  - name: fastapi-alerts
+    rules:
+      - alert: HighRequestLatency
+        expr: histogram_quantile(0.95, rate(request_latency_seconds_bucket[5m])) > 1
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High latency on API"
+          description: "95th percentile latency > 1s for the last 5 minutes"
+
+      - alert: RedisFailuresSpike
+        expr: increase(app_redis_failures_total[5m]) > 3
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Too many Redis failures"
+          description: "Redis failure count spiked above threshold"
+
+      - alert: CrashLoopingPods
+        expr: increase(kube_pod_container_status_restarts_total{container="fastapi"}[5m]) > 3
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "FastAPI container is restarting frequently"
+          description: "More than 3 restarts in the last 5 minutes"
