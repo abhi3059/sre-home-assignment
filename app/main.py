@@ -13,7 +13,15 @@ from time import time
 
 from app.database import connect_to_db
 from app.redis_client import connect_to_redis, REDIS_TTL
-from app.metrics import instrumentator, character_processed, cache_hits, cache_misses, request_latency, redis_failures
+from app.metrics import (
+    instrumentator,
+    character_processed,
+    cache_hits,
+    cache_misses,
+    request_latency,
+    redis_failures,
+    cache_hit_ratio, 
+)
 from app.tracing import setup_tracer
 from app.exceptions import setup_exception_handlers, RateLimitExceeded
 from app.utils import fetch_url, store_in_db
@@ -87,16 +95,28 @@ async def get_characters(
 
     try:
         cache_key = f"characters_page_{page}_limit_{limit}_sortby_{sort_by}_order_{sort_order}"
+        cached = None
+
         if redis_client:
             cached = await redis_client.get(cache_key)
             if cached:
                 logger.info("Cache hit for key: %s", cache_key)
                 cache_hits.inc()
-                return json.loads(cached)
             else:
                 logger.info("Cache miss for key: %s", cache_key)
                 cache_misses.inc()
 
+            # Update cache hit ratio
+            hits = cache_hits._value.get()
+            misses = cache_misses._value.get()
+            total = hits + misses
+            if total > 0:
+                cache_hit_ratio.set(hits / total)
+
+            if cached:
+                return json.loads(cached)
+
+        # Fetch data from external API
         filtered = []
         url = f"{RICK_AND_MORTY_API}?page={page}"
         async with httpx.AsyncClient() as client:

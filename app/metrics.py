@@ -1,4 +1,4 @@
-from prometheus_client import Counter, Summary, Histogram
+from prometheus_client import Counter, Summary, Histogram, Gauge
 from prometheus_fastapi_instrumentator import Instrumentator
 
 # --- Prometheus FastAPI Instrumentation ---
@@ -33,7 +33,7 @@ cache_hits = Counter(
     "Number of times the Redis cache was hit"
 )
 
-cache_misses = Counter( 
+cache_misses = Counter(
     "app_cache_misses_total",
     "Number of times the Redis cache was missed"
 )
@@ -41,4 +41,9 @@ cache_misses = Counter(
 redis_failures = Counter(
     "app_redis_failures_total",
     "Number of Redis failures (e.g., during chaos experiments)"
+)
+
+cache_hit_ratio = Gauge(
+    "app_cache_hit_ratio",
+    "Cache hit ratio = hits / (hits + misses)"
 )
