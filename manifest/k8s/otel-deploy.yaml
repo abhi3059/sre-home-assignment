@@ -40,13 +40,17 @@ data:
           http:
 
     exporters:
-      logging:
-        loglevel: debug
+      debug:
+        verbosity: detailed
+
+    processors:
+      batch:
 
     service:
       pipelines:
         traces:
           receivers: [otlp]
+          processors: [batch]
           exporters: [debug]
 ---
 apiVersion: v1
