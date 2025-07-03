@@ -104,6 +104,7 @@ jobs:
             --set controller.ingressClassResource.default=true
           kubectl rollout status deployment ingress-nginx-controller -n ingress-nginx --timeout=120s
 
+
       - name: Deploy using Helm
         run: |
           helm upgrade --install fastapi-app ./helm-chart \
@@ -124,8 +125,15 @@ jobs:
 
       - name: Run integration test
         run: |
-          kubectl port-forward --namespace ingress-nginx svc/ingress-nginx-controller 8443:443 &
-          sleep 5  # Give port-forward time to establish
-          
-          curl -k -H "Host: fastapi.local" https://localhost:8443/healthcheck
+          echo "📡 Port-forwarding ingress-nginx-controller..."
+          kubectl port-forward --namespace ingress-nginx svc/ingress-nginx-controller 8443:443 > port-forward.log 2>&1 &
+          PORT_FORWARD_PID=$!
+          sleep 5  # Wait for port-forwarding to be ready
+
+          echo "🩺 Sending request to /healthcheck endpoint..."
+          curl -v -k -H "Host: fastapi.local" https://localhost:8443/healthcheck
+
+          echo "🛑 Cleaning up port-forward..."
+          kill $PORT_FORWARD_PID || true
+
 
