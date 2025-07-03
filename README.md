@@ -111,8 +111,14 @@ helm upgrade --install fastapi-app ../../helm-chart \
 # Get all resources in the 'fastapi' namespace
 kubectl get all -n fastapi
 
-```
+## Kubernetes Resources in `fastapi` Namespace
+
+```<details>
+<summary>Click to expand kubectl output</summary>
+
+
 root@localhost:~/sre-home-assignment/manifest/k8s# kubectl get all -n fastapi
+
 NAME                                 READY   STATUS      RESTARTS   AGE
 pod/fastapi-app-58c88449cd-k9hnt     2/2     Running     0          19m
 pod/fastapi-app-58c88449cd-smmkr     2/2     Running     0          19m
@@ -152,8 +158,7 @@ replicaset.apps/redis-66949686f7           1         1         1       3d3h
 
 NAME                                              REFERENCE                TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
 horizontalpodautoscaler.autoscaling/fastapi-app   Deployment/fastapi-app   0%/70%    2         5         2          3d4h
-root@localhost:~/sre-home-assignment/manifest/k8s#
-```
+</details> ```
 
 
 ## 🔗 Access Endpoints
