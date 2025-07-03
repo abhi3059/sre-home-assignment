@@ -318,6 +318,31 @@ Performs checks for:
 }
 ```
 
+## RBAC VALIDATION: 
+
+```
+——RBAC VALIDATION 
+
+root@localhost:~/sre-home-assignment/manifest/k8s# kubectl get pods -n fastapi
+NAME                             READY   STATUS      RESTARTS   AGE
+rbac-test                        0/1     Completed   0          3d1h
+root@localhost:~/sre-home-assignment/manifest/k8s#
+
+root@localhost:~/sre-home-assignment/manifest/k8s# kubectl get pod rbac-test -n fastapi -o jsonpath='{.spec.containers[*].name}'
+kubectl
+root@localhost:~/sre-home-assignment/manifest/k8s#
+
+root@localhost:~/sre-home-assignment/manifest/k8s# kubectl exec -n fastapi -c kubectl -it rbac-test -- /bin/sh
+$ kubectl get pods -n fastapi
+NAME                           READY   STATUS    RESTARTS   AGE
+fastapi-app-7779454577-2fhrq   2/2     Running   0          12m
+fastapi-app-7779454577-997r6   2/2     Running   0          12m
+postgres-7df87f58f9-vpd6z      1/1     Running   0          3h44m
+rbac-test                      1/1     Running   0          3m30s
+redis-66949686f7-rzrjh         1/1     Running   0          3h44m
+$
+```
+
 
 ## 📊 Monitoring & Observability
 
