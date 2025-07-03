@@ -165,6 +165,24 @@ API documentation is available at:
 - 🔹 [`/docs`](http://172.236.172.53/docs#/) – Swagger UI  
 - 🔹 [`/openapi.json`](http://172.236.172.53/openapi.json) – OpenAPI Spec
 
+
+## 📖 API TYPICAL FLOW
+
+```mermaid
+graph TD
+    A[Start Request] --> B{Is data in Redis cache?}
+    B -- Yes --> C[Return cached result]
+    B -- No --> D[Call Rick & Morty API]
+    D --> E[Apply filters: Species=Human, Status=Alive, Origin=Earth variants]
+    E --> F[Store result in Redis with TTL]
+    F --> G{Already in Postgres?}
+    G -- No --> H[Insert into Postgres]
+    G -- Yes --> I[Skip DB insert]
+    H --> J[Return filtered result]
+    I --> J[Return filtered result]
+```
+
+
 ### 📦 Sample Endpoint
 
 ```http
