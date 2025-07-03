@@ -1,6 +1,3 @@
-Asdas
-
-
 # 🧬 Rick and Morty SRE Application
 
 A highly available, scalable, production-grade RESTful API that integrates with the [Rick and Morty API](https://rickandmortyapi.com/).  
