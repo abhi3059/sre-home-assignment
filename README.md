@@ -2,7 +2,6 @@
 
 A highly available, scalable, and production-grade RESTful application that integrates with the [Rick and Morty API](https://rickandmortyapi.com/). Built with SRE and DevOps best practices in mind, and deployed on Kubernetes using Helm and GitHub Actions.
 
----
 
 ## 📌 Table of Contents
 
@@ -29,7 +28,6 @@ A highly available, scalable, and production-grade RESTful application that inte
 
 This application queries the Rick and Morty API to fetch alive human characters originating from Earth (any variant), caches the result in Redis with TTL, persists the data into PostgreSQL, and exposes RESTful APIs with pagination, sorting, and health endpoints.
 
----
 
 ## 📐 Architecture
 
@@ -45,7 +43,6 @@ graph TD
     AppPod --> Jaeger
     AppPod --> Metrics[Prometheus Exporter]
 ```
----
 
 ## 🚀 Features
 
@@ -59,7 +56,6 @@ graph TD
 - **GitHub Actions CI/CD** with `kind` + Helm
 - **Log aggregation sidecar** (Fluentd/Filebeat)
 
----
 
 ## 🧰 Technology Stack
 
@@ -76,7 +72,6 @@ graph TD
 | Logging           | Fluentd or Filebeat                         |
 | Rate Limiting     | SlowAPI / Custom Middleware                 |
 
----
 
 ## 🧪 Setup & Deployment
 
@@ -112,7 +107,6 @@ helm upgrade --install rick-api ./charts/rick-api \
 kubectl get all -n rick-api
 ```
 
----
 
 ## 📖 API Documentation
 
@@ -120,8 +114,6 @@ API documentation is available at:
 
 - 🔹 [`/docs`](http://localhost:8000/docs) – Swagger UI  
 - 🔹 [`/openapi.json`](http://localhost:8000/openapi.json) – OpenAPI Spec
-
----
 
 ### 📦 Sample Endpoint
 
@@ -164,7 +156,6 @@ GET /characters?page=1&limit=5&sort=name
 }
 ```
 
----
 
 ## 🩺 Health Check
 
@@ -187,7 +178,6 @@ Performs checks for:
 }
 ```
 
----
 
 ## 📊 Monitoring & Observability
 
@@ -201,13 +191,11 @@ Performs checks for:
 
 ➡️ Dashboard exported as: `docs/grafana-dashboard.json`
 
----
 
 ### 📈 Tracing
 
 - Integrated with **OpenTelemetry** and **Jaeger** for distributed tracing.
 
----
 
 ### 🚨 Alerts
 
@@ -217,7 +205,6 @@ Defined in `PrometheusRule`:
 - **LatencySpike**: P95 latency > 500ms
 - **CrashLoopBackoff**: More than 3 restarts within 5 minutes
 
----
 
 ## 🔁 CI/CD Pipeline
 
@@ -231,7 +218,6 @@ GitHub Actions workflow: `.github/workflows/ci.yml`
 - ✅ Validate endpoints  
 - ✅ Upload test logs  
 
----
 
 ## ⚙️ Helm Chart Configuration
 
@@ -242,6 +228,7 @@ GitHub Actions workflow: `.github/workflows/ci.yml`
 | `ingress.enabled`      | true    | Enable ingress                       |
 | `resources.limits.cpu` | 500m    | CPU limit                            |
 | `tracing.enabled`      | true    | Enable Jaeger tracing                |
+
 
 ## 🧪 Testing
 
@@ -254,6 +241,7 @@ pytest tests/
 # Run integration tests only
 pytest tests/test_api.py
 ```
+
 
 ## 🔒 Security
 
