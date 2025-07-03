@@ -388,10 +388,6 @@ killall yes
 ```
 
 
-
-
-
-
 ## 📊 Monitoring & Observability
 
  
@@ -488,6 +484,68 @@ pytest tests/test_api.py
 
 
 
+## 📊 File 
+
+```
+File Structure
+
+SRE-HOME-ASSIGNMENT/
+├── .github/
+│   └── workflows/
+│       └── main.yml                # GitHub Actions workflow for CI/CD pipeline
+│
+├── alerts/
+│   ├── alerts.md                   # Documentation for Prometheus alerts
+│   └── prometheus-rules.yaml      # Prometheus alerting rules configuration
+│
+├── app/                            # Source code for FastAPI application
+│
+├── chaos/
+│   └── redis-pod-kill.yaml        # Chaos experiment to kill Redis pods and test resilience
+│
+├── helm-chart/
+│   ├── templates/                 # Helm template files for Kubernetes resources
+│   ├── Chart.yaml                 # Helm chart metadata
+│   ├── fastapi-app-0.1.0.tgz     # Packaged Helm chart (archived)
+│   └── values.yaml               # Default configuration values for Helm chart
+│
+├── kind-cluster/                  # KinD (Kubernetes in Docker) cluster setup files
+│
+├── manifest/
+│   └── k8s/                       # Kubernetes manifests for deploying the stack manually
+│       ├── app-deployment.yaml           # Deployment for FastAPI app
+│       ├── app-ingress.yaml              # Ingress definition for FastAPI app
+│       ├── app-service.yaml              # Service for FastAPI app
+│       ├── db-deployment.yaml           # Deployment for PostgreSQL database
+│       ├── db-service.yaml              # Service for PostgreSQL
+│       ├── fastapi-alerts.yaml          # Alert rules specific to FastAPI
+│       ├── fastapi-servicemonitor.yaml  # Prometheus ServiceMonitor for FastAPI
+│       ├── grafana-ingress.yaml         # Ingress config for Grafana dashboard
+│       ├── hpa.yaml                     # Horizontal Pod Autoscaler config
+│       ├── otel-deploy.yaml             # OpenTelemetry collector deployment
+│       ├── prometheus-ingress.yaml      # Ingress for Prometheus dashboard
+│       ├── rbac-test-pod.yaml           # RBAC for test pod access
+│       ├── rbac.yaml                    # Role-based access control resources
+│       ├── redis-deployment.yaml        # Deployment for Redis
+│       └── redis-service.yaml           # Service for Redis
+│
+├── observability/
+│   ├── grafana/
+│   │   └── grafana-dashboard.json      # Pre-configured dashboard JSON for Grafana
+│   └── prometheus/                     # Prometheus configuration directory (if used)
+│
+├── tests/                              # Unit and integration test cases
+│
+├── .env                                # Environment variable definitions (local)
+├── .flake8                             # Flake8 linting configuration
+├── Dockerfile                          # Dockerfile to containerize FastAPI app
+└── requirements.txt                    # Python dependencies
+└── openapi.yaml                        # OpenAPI spec defining the FastAPI endpoints and schemas
+└── README.MD                           # Project overview, setup, and usage documentation
+ 
+```
+
+
 ## CI/CD Pipeline
 
 GitHub Actions workflow defined in `.github/workflows/main.yml`
@@ -500,3 +558,6 @@ Screenshots:
 ![CI-CD success](image-2.png)
 
 --- 
+
+
+
