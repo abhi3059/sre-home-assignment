@@ -100,6 +100,28 @@ jobs:
             --cert=certs/tls.crt \
             --key=certs/tls.key \
             -n fastapi
+      
+      - name: Create DB credentials secret
+        run: |
+          kubectl create secret generic db-secret \
+            --from-literal=username=myuser \
+            --from-literal=password=mypassword \
+            -n fastapi
+
+      - name: Deploy Redis and PostgreSQL
+        run: |
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm repo update
+
+          helm upgrade --install redis bitnami/redis \
+            --namespace fastapi --create-namespace \
+            --set auth.enabled=false
+
+          helm upgrade --install postgres bitnami/postgresql \
+            --namespace fastapi \
+            --set auth.username=myuser \
+            --set auth.password=mypassword \
+            --set auth.database=rickmorty
 
       - name: Install Metrics Server for HPA
         run: |
@@ -155,15 +177,18 @@ jobs:
           echo "📡 Port-forwarding ingress-nginx-controller..."
           kubectl port-forward --namespace ingress-nginx svc/ingress-nginx-controller 8443:443 > port-forward.log 2>&1 &
           PORT_FORWARD_PID=$!
-          sleep 5  # Wait for port-forwarding to be ready
+          sleep 5
 
           echo "🔍 Verifying TLS certificate served from ingress-nginx..."
           echo | openssl s_client -connect localhost:8443 -servername fastapi.local 2>/dev/null | openssl x509 -noout -subject -issuer -dates
 
           echo "🩺 Sending request to /healthcheck endpoint..."
-          curl -i -k -H "Host: fastapi.local" https://localhost:8443/healthcheck
+          curl -i -k -H "Host: fastapi.local" https://localhost:8443/healthcheck | tee response.log
+
+          echo "🔎 Checking healthcheck response..."
+          grep -q '"database":true' response.log && echo "✅ Database connected" || echo "❌ Database connection failed"
+          grep -q '"redis":true' response.log && echo "✅ Redis connected" || echo "❌ Redis connection failed"
 
           echo "🛑 Cleaning up port-forward..."
           kill $PORT_FORWARD_PID || true
-
 
