@@ -15,9 +15,7 @@ def setup_tracer(app):
 
     otlp_endpoint = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://localhost:4318")
 
-    otlp_exporter = OTLPSpanExporter(
-        endpoint=otlp_endpoint  
-    )
+    otlp_exporter = OTLPSpanExporter()
 
     span_processor = BatchSpanProcessor(otlp_exporter)
     trace.get_tracer_provider().add_span_processor(span_processor)
