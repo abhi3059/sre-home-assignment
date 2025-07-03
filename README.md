@@ -318,7 +318,7 @@ Performs checks for:
 }
 ```
 
-## RBAC VALIDATION: 
+## RBAC Validation: 
 
 ```
 ——RBAC VALIDATION 
@@ -341,6 +341,50 @@ postgres-7df87f58f9-vpd6z      1/1     Running   0          3h44m
 rbac-test                      1/1     Running   0          3m30s
 redis-66949686f7-rzrjh         1/1     Running   0          3h44m
 $
+```
+
+
+### HPA Testing for fastapi-app
+
+```
+1. Check HPA Status
+
+Run the following to confirm the current target CPU and metrics:
+```
+kubectl get hpa fastapi-app -n fastapi
+
+NAME          REFERENCE                TARGETS    MINPODS   MAXPODS   REPLICAS   AGE
+fastapi-app   Deployment/fastapi-app   0%/70%     2         5         2          3d6h
+
+```
+
+2. Simulate CPU Load
+
+On one of the pods (e.g., fastapi-app-58c88449cd-k9hnt) and running a CPU-intensive process:
+```
+kubectl exec -n fastapi -it fastapi-app-58c88449cd-k9hnt -- sh
+
+Exec in side the pod (fastapi-app-58c88449cd-k9hnt)
+yes > /dev/null
+```
+
+3. Monitor the HPA Respond
+
+```
+Every 5.0s: kubectl get hpa fastapi-app -n fastapi                                                                                                                                                              localhost: Thu Jul  3 18:33:27 2025
+
+NAME          REFERENCE                TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+fastapi-app   Deployment/fastapi-app   30%/70%    2         5         2          3d6h
+```
+
+4. Clean-up 
+
+Stop the CPU load after observing scaling:
+
+```
+Exec in side the pod (fastapi-app-58c88449cd-k9hnt)
+killall yes
+
 ```
 
 
