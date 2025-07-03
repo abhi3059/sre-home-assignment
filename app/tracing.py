@@ -12,12 +12,11 @@ def setup_tracer(app):
             resource=Resource.create({SERVICE_NAME: "rickmorty-api"})
         )
     )
-    jaeger_host = os.getenv("JAEGER_HOST", "localhost")
-    jaeger_port = int(os.getenv("JAEGER_PORT", 4318))
 
-    otlp_exporter = OTLPSpanExporter(
-        endpoint=f"http://{jaeger_host}:{jaeger_port}/v1/traces"
-    )
+    # Use OTEL_EXPORTER_OTLP_ENDPOINT env var if defined
+    otlp_endpoint = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://localhost:4318/v1/traces")
+
+    otlp_exporter = OTLPSpanExporter(endpoint=otlp_endpoint)
 
     trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(otlp_exporter))
     FastAPIInstrumentor.instrument_app(app)
