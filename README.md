@@ -351,7 +351,7 @@ $
 
 1. Check HPA Status
 
-Run the following to confirm the current target CPU and metrics:
+  Run the following to confirm the current target CPU and metrics:
 ```
 kubectl get hpa fastapi-app -n fastapi
 
@@ -362,7 +362,7 @@ fastapi-app   Deployment/fastapi-app   0%/70%     2         5         2         
 
 2. Simulate CPU Load
 
-On one of the pods (e.g., fastapi-app-58c88449cd-k9hnt) and running a CPU-intensive process:
+  On one of the pods (e.g., fastapi-app-58c88449cd-k9hnt) and running a CPU-intensive process:
 ```
 kubectl exec -n fastapi -it fastapi-app-58c88449cd-k9hnt -- sh
 
@@ -381,7 +381,7 @@ fastapi-app   Deployment/fastapi-app   30%/70%    2         5         2         
 
 4. Clean-up 
 
-Stop the CPU load after observing scaling:
+  Stop the CPU load after observing scaling:
 ```
 Exec in side the pod (fastapi-app-58c88449cd-k9hnt)
 killall yes
@@ -394,19 +394,16 @@ killall yes
 
 ## 📊 Monitoring & Observability
 
-
-### 🔍 Grafana Dashboard 
-
-### ACCESS GRAFANA :
  
-#### GRAFANA CREDENTIAL
+#### GRAFANA ACCESS & CREDENTIAL
 
+Grafana URL : http://172.236.172.53:31000/login
 ```
-URL : http://172.236.172.53:31000/login
 USER : admin
 PASS : prom-operator
 ```
 
+### 🔍 Grafana Dashboard
 
 FASTAPI Application-Specific Metrics Dashboard (e.g., request latency, cache hit ratio, API error rates). : http://172.236.172.53:31000/d/edbad086-10d0-42a0-a0b1-f80522aab6e7/fastapi-sre-dashboard?orgId=1&from=now-6h&to=now&timezone=browser&refresh=1m
 
@@ -418,9 +415,9 @@ K8S DASHBOARD : http://172.236.172.53:31000/d/24b68a25-8b23-4140-98e7-cef238e14f
 
 #### PROMETHEUS CREDENTIAL
 
+Prometheus URL : http://172.236.172.53:31000/login
 ```
-URL : http://172.236.172.53:31000/login
-Note : No CRED
+Note : NO CREDENTIAL REQUIRED
 ```
 
 ### 🔍 Metrics
