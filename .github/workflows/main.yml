@@ -141,6 +141,17 @@ jobs:
             --set controller.extraArgs.default-ssl-certificate=fastapi/fastapi-tls
           kubectl rollout status deployment ingress-nginx-controller -n ingress-nginx --timeout=120s
 
+      - name: Label and annotate db-secret for Helm ownership
+        run: |
+          kubectl label secret db-secret \
+            app.kubernetes.io/managed-by=Helm \
+            --namespace fastapi --overwrite
+
+          kubectl annotate secret db-secret \
+            meta.helm.sh/release-name=fastapi-app \
+            meta.helm.sh/release-namespace=fastapi \
+            --namespace fastapi --overwrite
+
       - name: Deploy using Helm
         run: |
           helm upgrade --install fastapi-app ./helm-chart \
