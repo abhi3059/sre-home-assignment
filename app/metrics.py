@@ -47,4 +47,3 @@ cache_hit_ratio = Gauge(
     "app_cache_hit_ratio",
     "Cache hit ratio = hits / (hits + misses)"
 )
-
