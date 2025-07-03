@@ -321,6 +321,12 @@ Performs checks for:
 
 ## 📊 Monitoring & Observability
 
+
+### 🔍 Grafana Dashboard 
+
+![APP Dashboard ](image-1.png)
+
+
 ### 🔍 Metrics
 
 - Exposed at: `https://172.236.172.53/metrics` (Prometheus format)
@@ -387,3 +393,17 @@ pytest tests/test_api.py
 - 🛡️ Docker image scanning via **Trivy** integrated in the CI pipeline
 - 📁 `.env.example` is provided; **real secrets are excluded** from the repository
 
+
+
+## CI/CD Pipeline
+
+GitHub Actions workflow defined in `.github/workflows/main.yml`
+
+- [View CI Status Badge](https://github.com/abhi3059/sre-home-assignment/actions/workflows/main.yml/badge.svg)
+- [Successful CI Run Log](https://github.com/abhi3059/sre-home-assignment/actions/runs/16057133154)
+
+Screenshots:
+
+![CI success](./evidence/success-run.png)
+
+--- 
