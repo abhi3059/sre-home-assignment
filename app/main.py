@@ -13,7 +13,7 @@ from time import time
 
 from app.database import connect_to_db
 from app.redis_client import connect_to_redis, REDIS_TTL
-from app.metrics import instrumentator, character_processed, cache_hits, request_latency, redis_failures
+from app.metrics import instrumentator, character_processed, cache_hits, cache_misses, request_latency, redis_failures
 from app.tracing import setup_tracer
 from app.exceptions import setup_exception_handlers, RateLimitExceeded
 from app.utils import fetch_url, store_in_db
@@ -71,8 +71,6 @@ class Character(BaseModel):
     species: str
     origin: str
 
-
-
 # --- Endpoints ---
 @app.get("/characters", response_model=List[Character])
 @limiter.limit("100/minute")
@@ -95,6 +93,9 @@ async def get_characters(
                 logger.info("Cache hit for key: %s", cache_key)
                 cache_hits.inc()
                 return json.loads(cached)
+            else:
+                logger.info("Cache miss for key: %s", cache_key)
+                cache_misses.inc()
 
         filtered = []
         url = f"{RICK_AND_MORTY_API}?page={page}"
@@ -140,7 +141,6 @@ async def get_characters(
         raise HTTPException(status_code=500, detail="Internal server error")
     finally:
         request_latency.observe(time() - start_time)
-
 
 @app.get("/healthcheck")
 async def healthcheck(request: Request):

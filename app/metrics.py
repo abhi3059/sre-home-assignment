@@ -33,6 +33,11 @@ cache_hits = Counter(
     "Number of times the Redis cache was hit"
 )
 
+cache_misses = Counter( 
+    "app_cache_misses_total",
+    "Number of times the Redis cache was missed"
+)
+
 redis_failures = Counter(
     "app_redis_failures_total",
     "Number of Redis failures (e.g., during chaos experiments)"
