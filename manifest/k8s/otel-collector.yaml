@@ -47,7 +47,7 @@ data:
       pipelines:
         traces:
           receivers: [otlp]
-          exporters: [logging]
+          exporters: [debug]
 ---
 apiVersion: v1
 kind: Service
