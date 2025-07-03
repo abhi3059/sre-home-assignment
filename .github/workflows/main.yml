@@ -137,12 +137,28 @@ jobs:
           kubectl describe hpa fastapi-app -n fastapi
           kubectl top pods -n fastapi || echo "Metrics not ready yet"
 
+
+      - name: Verify Ingress resource and TLS configuration
+        run: |
+          echo "🔍 Checking Ingress resource..."
+          kubectl get ingress -n fastapi -o yaml | tee ingress-output.yaml
+          echo "✅ Should reference 'fastapi.local' and secret 'fastapi-tls'"
+
+      - name: Verify TLS Secret content
+        run: |
+          echo "🔐 Checking TLS Secret..."
+          kubectl get secret fastapi-tls -n fastapi -o yaml
+          kubectl get secret fastapi-tls -n fastapi -o jsonpath='{.data.tls\.crt}' | base64 -d | openssl x509 -noout -subject -issuer -dates
+
       - name: Run integration test
         run: |
           echo "📡 Port-forwarding ingress-nginx-controller..."
           kubectl port-forward --namespace ingress-nginx svc/ingress-nginx-controller 8443:443 > port-forward.log 2>&1 &
           PORT_FORWARD_PID=$!
           sleep 5  # Wait for port-forwarding to be ready
+
+          echo "🔍 Verifying TLS certificate served from ingress-nginx..."
+          echo | openssl s_client -connect localhost:8443 -servername fastapi.local 2>/dev/null | openssl x509 -noout -subject -issuer -dates
 
           echo "🩺 Sending request to /healthcheck endpoint..."
           curl -i -k -H "Host: fastapi.local" https://localhost:8443/healthcheck
