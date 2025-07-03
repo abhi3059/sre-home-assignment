@@ -8,7 +8,7 @@ Engineered with modern **SRE** and **DevOps** best practices — deployed on Kub
 ## 📚 Table of Contents
 
 - [✅ Overview](#✅-overview)
-- [📐 Architecture](#📐-architecture)
+- [🏗️ Architecture](#📐-architecture)
 - [🚀 Features](#🚀-features)
 - [🧰 Technology Stack](#🧰-technology-stack)
 - [🧪 Setup & Deployment](#🧪-setup--deployment)
@@ -33,8 +33,7 @@ This service queries the Rick and Morty API to fetch alive, human characters fro
 The results are cached in **Redis**, persisted in **PostgreSQL**, and served via a **FastAPI** interface with sorting, pagination, and retry logic.
 
 
-
-## 📐 Architecture
+## 🏗️ Architecture
 
 ```mermaid
 graph TD
@@ -49,9 +48,8 @@ graph TD
     AppPod --> Metrics[Prometheus Exporter]
 ```
 
-
-
-## 🚀 Features
+Architecture
+## 🚀 Features 
 
 - 🔍 Filters: `Species=Human`, `Status=Alive`, `Origin=Earth*`
 - 🔁 API rate limiting & retries
@@ -62,7 +60,6 @@ graph TD
 - ⚖️ HPA, TLS ingress support
 - 🧪 GitHub Actions CI/CD with kind + Helm
 - 📥 Fluentd/Filebeat log aggregation
-
 
 
 ## 🧰 Technology Stack
@@ -79,7 +76,6 @@ graph TD
 | Monitoring        | Prometheus, Grafana, OpenTelemetry, Jaeger  |
 | Logging           | Fluentd or Filebeat                         |
 | Rate Limiting     | SlowAPI / Custom Middleware                 |
-
 
 
 ## 🧪 Setup & Deployment
@@ -109,7 +105,6 @@ kubectl get all -n rick-api
 ```
 
 
-
 ## 🔗 Access Endpoints
 
 | Endpoint        | Description             | URL                                  |
@@ -117,7 +112,6 @@ kubectl get all -n rick-api
 | 🧬 API          | Character listing        | [`/characters`](http://localhost:8000/characters) |
 | 📈 Metrics      | Prometheus metrics       | [`/metrics`](http://localhost:8000/metrics)       |
 | 🩺 Health Check | Service health status    | [`/healthcheck`](http://localhost:8000/healthcheck) |
-
 
 
 ## 📖 API Documentation
@@ -169,7 +163,6 @@ GET /characters?page=1&limit=5&sort=name
 ```
 
 
-
 ## 🩺 Health Check
 
 **Endpoint**: `GET /healthcheck`
@@ -190,7 +183,6 @@ Performs checks for:
   "external_api": "ok"
 }
 ```
-
 
 
 ## 📊 Monitoring & Observability
@@ -218,7 +210,6 @@ Defined in `PrometheusRule`:
 - **CrashLoopBackoff**: More than 3 restarts within 5 minutes
 
 
-
 ## 🔁 CI/CD Pipeline
 
 GitHub Actions workflow: `.github/workflows/ci.yml`
@@ -232,7 +223,6 @@ GitHub Actions workflow: `.github/workflows/ci.yml`
 - ✅ Upload test logs  
 
 
-
 ## ⚙️ Helm Chart Configuration
 
 | Key                   | Default | Description                          |
@@ -242,7 +232,6 @@ GitHub Actions workflow: `.github/workflows/ci.yml`
 | `ingress.enabled`      | true    | Enable ingress                       |
 | `resources.limits.cpu` | 500m    | CPU limit                            |
 | `tracing.enabled`      | true    | Enable Jaeger tracing                |
-
 
 
 ## 🧪 Testing
@@ -256,7 +245,6 @@ pytest tests/
 # Run integration tests only
 pytest tests/test_api.py
 ```
-
 
 
 ## 🔒 Security
