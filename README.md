@@ -324,8 +324,31 @@ Performs checks for:
 
 ### 🔍 Grafana Dashboard 
 
+### ACCESS GRAFANA :
+ 
+#### GRAFANA CREDENTIAL
+
+```
+URL : http://172.236.172.53:31000/login
+USER : admin
+PASS : prom-operator
+```
+
+
+FASTAPI Application-Specific Metrics Dashboard (e.g., request latency, cache hit ratio, API error rates). : http://172.236.172.53:31000/d/edbad086-10d0-42a0-a0b1-f80522aab6e7/fastapi-sre-dashboard?orgId=1&from=now-6h&to=now&timezone=browser&refresh=1m
+
+K8S DASHBOARD : http://172.236.172.53:31000/d/24b68a25-8b23-4140-98e7-cef238e14f31/fastapi-3a-k8s-dashboard?orgId=1&from=now-30m&to=now&timezone=browser&var-origin_prometheus=&var-Node=$__all&var-NameSpace=$__all&var-Container=$__all&var-Pod=$__all
+
+
 ![APP Dashboard ](image-1.png)
 
+
+#### PROMETHEUS CREDENTIAL
+
+```
+URL : http://172.236.172.53:31000/login
+Note : No CRED
+```
 
 ### 🔍 Metrics
 
@@ -400,10 +423,10 @@ pytest tests/test_api.py
 GitHub Actions workflow defined in `.github/workflows/main.yml`
 
 - [View CI Status Badge](https://github.com/abhi3059/sre-home-assignment/actions/workflows/main.yml/badge.svg)
-- [Successful CI Run Log](https://github.com/abhi3059/sre-home-assignment/actions/runs/16057133154)
+- [Successful CI Run Log](https://github.com/abhi3059/sre-home-assignment/actions/runs/16057507228)
 
 Screenshots:
 
-![CI success](./evidence/success-run.png)
+![CI-CD success](image-2.png)
 
 --- 
