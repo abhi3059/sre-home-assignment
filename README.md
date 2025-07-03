@@ -1,32 +1,35 @@
-# Rick and Morty SRE Application
+# 🧬 Rick and Morty SRE Application
 
-A highly available, scalable, and production-grade RESTful application that integrates with the [Rick and Morty API](https://rickandmortyapi.com/). Built with SRE and DevOps best practices in mind, and deployed on Kubernetes using Helm and GitHub Actions.
+A highly available, scalable, production-grade RESTful API that integrates with the [Rick and Morty API](https://rickandmortyapi.com/).  
+Engineered with modern **SRE** and **DevOps** best practices — deployed on Kubernetes using Helm and GitHub Actions.
 
+---
 
-## 📌 Table of Contents
+## 📚 Table of Contents
 
-- [Overview](#overview)
-- [Architecture](#architecture)
-- [Features](#features)
-- [Technology Stack](#technology-stack)
-- [Setup & Deployment](#setup--deployment)
-  - [Local Development](#local-development)
-  - [Kubernetes Deployment](#kubernetes-deployment)
-- [API Documentation](#api-documentation)
-- [Health Check](#health-check)
-- [Monitoring & Observability](#monitoring--observability)
-- [CI/CD Pipeline](#cicd-pipeline)
-- [Helm Chart Configuration](#helm-chart-configuration)
-- [Testing](#testing)
-- [Security](#security)
-- [Contributing](#contributing)
-- [License](#license)
+- [✅ Overview](#✅-overview)
+- [📐 Architecture](#📐-architecture)
+- [🚀 Features](#🚀-features)
+- [🧰 Technology Stack](#🧰-technology-stack)
+- [🧪 Setup & Deployment](#🧪-setup--deployment)
+  - [⚙️ Local Development](#⚙️-local-development)
+  - [☸️ Kubernetes Deployment](#☸️-kubernetes-deployment-using-helm)
+- [📖 API Documentation](#📖-api-documentation)
+- [🩺 Health Check](#🩺-health-check)
+- [📊 Monitoring & Observability](#📊-monitoring--observability)
+- [🔁 CI/CD Pipeline](#🔁-cicd-pipeline)
+- [⚙️ Helm Chart Configuration](#⚙️-helm-chart-configuration)
+- [🧪 Testing](#🧪-testing-1)
+- [🔒 Security](#🔒-security)
+- [🤝 Contributing](#🤝-contributing)
+- [🪪 License](#🪪-license)
 
 ---
 
 ## ✅ Overview
 
-This application queries the Rick and Morty API to fetch alive human characters originating from Earth (any variant), caches the result in Redis with TTL, persists the data into PostgreSQL, and exposes RESTful APIs with pagination, sorting, and health endpoints.
+This service queries the Rick and Morty API to fetch alive, human characters from Earth-based origins.  
+The results are cached in **Redis**, persisted in **PostgreSQL**, and served via a **FastAPI** interface with sorting, pagination, and retry logic.
 
 
 ## 📐 Architecture
@@ -44,17 +47,18 @@ graph TD
     AppPod --> Metrics[Prometheus Exporter]
 ```
 
+
 ## 🚀 Features
 
-- **Filters**: `Species=Human`, `Status=Alive`, `Origin=Earth*`
-- **API rate limit handling** with retries
-- **Redis caching** with TTL
-- **PostgreSQL** persistence
-- **REST API** with pagination and sorting
-- **Prometheus metrics** & distributed tracing (OpenTelemetry)
-- **Horizontal Pod Autoscaling** & TLS Ingress
-- **GitHub Actions CI/CD** with `kind` + Helm
-- **Log aggregation sidecar** (Fluentd/Filebeat)
+- 🔍 Filters: `Species=Human`, `Status=Alive`, `Origin=Earth*`
+- 🔁 API rate limiting & retries
+- 💾 Redis caching with TTL
+- 🗃️ PostgreSQL persistence
+- 📡 REST API with pagination & sorting
+- 📈 Prometheus metrics + OpenTelemetry tracing
+- ⚖️ HPA, TLS ingress support
+- 🧪 GitHub Actions CI/CD with kind + Helm
+- 📥 Fluentd/Filebeat log aggregation
 
 
 ## 🧰 Technology Stack
@@ -85,14 +89,6 @@ cp .env.example .env
 docker-compose up --build
 ```
 
-### 🔗 Access Endpoints
-
-After running the app locally with `docker-compose` or deploying it to Kubernetes, access the application at:
-
-- **API**: [http://localhost:8000/characters](http://localhost:8000/characters)  
-- **Metrics**: [http://localhost:8000/metrics](http://localhost:8000/metrics)  
-- **Health Check**: [http://localhost:8000/healthcheck](http://localhost:8000/healthcheck)
-
 ### ☸️ Kubernetes Deployment (using Helm)
 
 ```bash
@@ -106,6 +102,15 @@ helm upgrade --install rick-api ./charts/rick-api \
 
 kubectl get all -n rick-api
 ```
+
+
+## 🔗 Access Endpoints
+
+| Endpoint        | Description             | URL                                  |
+|----------------|-------------------------|--------------------------------------|
+| 🧬 API          | Character listing        | [`/characters`](http://localhost:8000/characters) |
+| 📈 Metrics      | Prometheus metrics       | [`/metrics`](http://localhost:8000/metrics)       |
+| 🩺 Health Check | Service health status    | [`/healthcheck`](http://localhost:8000/healthcheck) |
 
 
 ## 📖 API Documentation
@@ -191,11 +196,9 @@ Performs checks for:
 
 ➡️ Dashboard exported as: `docs/grafana-dashboard.json`
 
-
 ### 📈 Tracing
 
 - Integrated with **OpenTelemetry** and **Jaeger** for distributed tracing.
-
 
 ### 🚨 Alerts
 
