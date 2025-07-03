@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-collector-cm
+  namespace: fastapi
+data:
+  collector-config.yaml: |
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+          http:
+
+    exporters:
+      logging:
+        loglevel: debug
+
+    processors:
+      batch:
+
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [logging]
