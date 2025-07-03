@@ -114,14 +114,16 @@ jobs:
           helm repo update
 
           helm upgrade --install redis bitnami/redis \
-            --namespace fastapi --create-namespace \
-            --set auth.enabled=false
+              --namespace fastapi --create-namespace \
+              --set auth.enabled=false \
+              --set fullnameOverride=redis
 
           helm upgrade --install postgres bitnami/postgresql \
-            --namespace fastapi \
-            --set auth.username=myuser \
-            --set auth.password=mypassword \
-            --set auth.database=rickmorty
+              --namespace fastapi \
+              --set auth.username=myuser \
+              --set auth.password=mypassword \
+              --set auth.database=rickmorty \
+              --set fullnameOverride=postgres
 
       - name: Install Metrics Server for HPA
         run: |
