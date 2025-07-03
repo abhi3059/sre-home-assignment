@@ -131,7 +131,7 @@ jobs:
           sleep 5  # Wait for port-forwarding to be ready
 
           echo "🩺 Sending request to /healthcheck endpoint..."
-          curl -v -k -H "Host: fastapi.local" https://localhost:8443/healthcheck
+          curl -i -k -H "Host: fastapi.local" https://localhost:8443/healthcheck
 
           echo "🛑 Cleaning up port-forward..."
           kill $PORT_FORWARD_PID || true
