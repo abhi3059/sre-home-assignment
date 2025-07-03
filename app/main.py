@@ -102,10 +102,10 @@ async def get_characters(
         cache_key = f"characters_page_{page}_limit_{limit}_sortby_{sort_by}_order_{sort_order}"
         cached = None
 
-        logger.info(f"Redis client available: {redis_client is not None}")
-        logger.info(f"Trying to get key: {cache_key}")
-
-        if redis_client:
+        if not redis_client:
+            logger.warning("Redis client is not available. Skipping cache lookup.")
+        else:
+            logger.info(f"Trying to get key from Redis: {cache_key}")
             cached = await redis_client.get(cache_key)
             if cached:
                 logger.info("Cache hit for key: %s", cache_key)
@@ -125,8 +125,9 @@ async def get_characters(
                 return json.loads(cached)
 
         # Fetch data from external API
-        filtered = []
         url = f"{RICK_AND_MORTY_API}?page={page}"
+        logger.info(f"Fetching characters from external API: {url}")
+        filtered = []
         async with httpx.AsyncClient() as client:
             data = await fetch_url(client, url)
             for character in data.get("results", []):
@@ -140,10 +141,14 @@ async def get_characters(
                         "species": character["species"],
                         "origin": character["origin"]["name"]
                     }
-                    if db_conn:
-                        await store_in_db(character, db_conn)
                     filtered.append(item)
                     character_processed.inc()
+                    if db_conn:
+                        await store_in_db(character, db_conn)
+
+        logger.info(f"Total filtered characters passing criteria: {len(filtered)}")
+        if not filtered:
+            logger.warning("No characters matched filtering criteria.")
 
         sorted_data = sorted(
             filtered,
@@ -158,14 +163,14 @@ async def get_characters(
         return sorted_data
 
     except httpx.HTTPStatusError as e:
-        logger.error("HTTP error: %s", e)
+        logger.error(f"HTTP error while fetching characters for page {page}: {e}")
         raise HTTPException(status_code=e.response.status_code, detail=str(e))
     except RedisConnectionError:
         logger.error("Redis unavailable - possibly due to chaos experiment.")
         redis_failures.inc()
         raise HTTPException(status_code=503, detail="Redis unavailable")
     except Exception as e:
-        logger.exception("Unexpected error")
+        logger.exception(f"Unexpected error on /characters?page={page}: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
     finally:
         request_latency.observe(time() - start_time)
