@@ -126,7 +126,7 @@ jobs:
       - name: Run integration test
         run: |
           echo "📡 Port-forwarding ingress-nginx-controller..."
-          kubectl port-forward --namespace ingress-nginx svc/ingress-nginx-controller 8443:443 > port-forward.log 2>&1 &
+          kubectl port-forward --namespace fastapi svc/ingress-nginx-controller 8443:443 > port-forward.log 2>&1 &
           PORT_FORWARD_PID=$!
           sleep 5  # Wait for port-forwarding to be ready
 
