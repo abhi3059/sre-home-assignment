@@ -4,8 +4,8 @@ receivers:
       http:
 
 exporters:
-  logging:
-    loglevel: debug
+  debug:
+    verbosity: detailed
 
 service:
   pipelines:
