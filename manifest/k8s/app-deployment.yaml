@@ -43,8 +43,6 @@ spec:
                   key: password
             - name: DB_NAME
               value: "rickmorty"
-            - name: OTEL_EXPORTER_OTLP_ENDPOINT
-              value: "http://otel-collector.fastapi:4318"
         - name: fluentd
           image: fluent/fluentd:v1.14-1
           env:
