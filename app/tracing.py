@@ -16,8 +16,7 @@ def setup_tracer(app):
     otlp_endpoint = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://otel-collector.fastapi:4318")
 
     otlp_exporter = OTLPSpanExporter(
-        endpoint=otlp_endpoint,
-        insecure=True  # Required if the OTEL Collector isn't using HTTPS
+        endpoint=otlp_endpoint
     )
 
     span_processor = BatchSpanProcessor(otlp_exporter)
