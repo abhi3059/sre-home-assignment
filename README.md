@@ -86,16 +86,6 @@ Architecture
 ### ⚙️ Local Development
 
 ```bash
-git clone https://github.com/abhi3059/sre-home-assignment.git
-cd sre-home-assignment
-
-cp .env.example .env
-docker-compose up --build
-```
-
-### ☸️ Kubernetes Deployment (using Helm)
-
-```bash
 # Prerequisites
 kubectl config use-context kind-kind
 helm repo add stable https://charts.helm.sh/stable
@@ -107,16 +97,13 @@ helm upgrade --install fastapi-app ../../helm-chart \
   --create-namespace \
   --set image.repository=abhi3059/fastapi-app \
   --set image.tag=latest 
+```
 
 # Get all resources in the 'fastapi' namespace
 kubectl get all -n fastapi
 
-## Kubernetes Resources in `fastapi` Namespace
 
-```<details>
-<summary>Click to expand kubectl output</summary>
-
-
+```
 root@localhost:~/sre-home-assignment/manifest/k8s# kubectl get all -n fastapi
 
 NAME                                 READY   STATUS      RESTARTS   AGE
@@ -158,7 +145,8 @@ replicaset.apps/redis-66949686f7           1         1         1       3d3h
 
 NAME                                              REFERENCE                TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
 horizontalpodautoscaler.autoscaling/fastapi-app   Deployment/fastapi-app   0%/70%    2         5         2          3d4h
-</details> ```
+```
+
 
 
 ## 🔗 Access Endpoints
