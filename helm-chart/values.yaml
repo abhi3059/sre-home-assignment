@@ -37,9 +37,11 @@ env:
   REDIS_HOST: redis
   REDIS_PORT: "6379"
   CACHE_TTL: "3600"
-  DB_HOST: postgres
-  DB_PORT: "5432"
-  DB_NAME: rickmorty
+  POSTGRES_HOST: postgres
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: rickmorty
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
 
 # Sensitive data to be mounted from secrets
 database:
