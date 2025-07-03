@@ -1,3 +1,6 @@
+Asdas
+
+
 # 🧬 Rick and Morty SRE Application
 
 A highly available, scalable, production-grade RESTful API that integrates with the [Rick and Morty API](https://rickandmortyapi.com/).  
@@ -83,8 +86,8 @@ Architecture
 ### ⚙️ Local Development
 
 ```bash
-git clone https://github.com/yourusername/rick-and-morty-sre.git
-cd rick-and-morty-sre
+git clone https://github.com/abhi3059/sre-home-assignment.git
+cd sre-home-assignment
 
 cp .env.example .env
 docker-compose up --build
@@ -97,11 +100,59 @@ docker-compose up --build
 kubectl config use-context kind-kind
 helm repo add stable https://charts.helm.sh/stable
 
-# Deploy the app
-helm upgrade --install rick-api ./charts/rick-api \
-  --values charts/rick-api/values.yaml
 
-kubectl get all -n rick-api
+# Deploy the app with specified namespace, image repo/tag
+helm upgrade --install fastapi-app ../../helm-chart \
+  --namespace fastapi \
+  --create-namespace \
+  --set image.repository=abhi3059/fastapi-app \
+  --set image.tag=latest 
+
+# Get all resources in the 'fastapi' namespace
+kubectl get all -n fastapi
+
+```
+root@localhost:~/sre-home-assignment/manifest/k8s# kubectl get all -n fastapi
+NAME                                 READY   STATUS      RESTARTS   AGE
+pod/fastapi-app-58c88449cd-k9hnt     2/2     Running     0          19m
+pod/fastapi-app-58c88449cd-smmkr     2/2     Running     0          19m
+pod/otel-collector-65df48876-hf6sn   1/1     Running     0          49m
+pod/postgres-7df87f58f9-vpd6z        1/1     Running     0          3d3h
+pod/rbac-test                        0/1     Completed   0          2d23h
+pod/redis-66949686f7-rzrjh           1/1     Running     0          3d3h
+
+NAME                     TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+service/fastapi-app      ClusterIP   10.96.238.110   <none>        80/TCP     3d4h
+service/otel-collector   ClusterIP   10.96.160.241   <none>        4318/TCP   3h2m
+service/postgres         ClusterIP   10.96.39.49     <none>        5432/TCP   3d2h
+service/redis            ClusterIP   10.96.41.38     <none>        6379/TCP   3d3h
+
+NAME                             READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/fastapi-app      2/2     2            2           3d4h
+deployment.apps/otel-collector   1/1     1            1           3h2m
+deployment.apps/postgres         1/1     1            1           3d3h
+deployment.apps/redis            1/1     1            1           3d3h
+
+NAME                                       DESIRED   CURRENT   READY   AGE
+replicaset.apps/fastapi-app-557cdbd5f6     0         0         0       38m
+replicaset.apps/fastapi-app-58c88449cd     2         2         2       19m
+replicaset.apps/fastapi-app-5bf656b985     0         0         0       21m
+replicaset.apps/fastapi-app-5f69bf5c57     0         0         0       64m
+replicaset.apps/fastapi-app-69d66bdfcf     0         0         0       2d1h
+replicaset.apps/fastapi-app-6d794c8548     0         0         0       50m
+replicaset.apps/fastapi-app-6fd544b5d9     0         0         0       31m
+replicaset.apps/fastapi-app-75fcbc9d5c     0         0         0       30m
+replicaset.apps/fastapi-app-7dcc885f8c     0         0         0       41m
+replicaset.apps/fastapi-app-86d76744b      0         0         0       21m
+replicaset.apps/fastapi-app-b844fbcf6      0         0         0       51m
+replicaset.apps/otel-collector-65df48876   1         1         1       49m
+replicaset.apps/otel-collector-f7bd5d6     0         0         0       3h2m
+replicaset.apps/postgres-7df87f58f9        1         1         1       3d3h
+replicaset.apps/redis-66949686f7           1         1         1       3d3h
+
+NAME                                              REFERENCE                TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+horizontalpodautoscaler.autoscaling/fastapi-app   Deployment/fastapi-app   0%/70%    2         5         2          3d4h
+root@localhost:~/sre-home-assignment/manifest/k8s#
 ```
 
 
@@ -109,17 +160,17 @@ kubectl get all -n rick-api
 
 | Endpoint        | Description             | URL                                  |
 |----------------|-------------------------|--------------------------------------|
-| 🧬 API          | Character listing        | [`/characters`](http://localhost:8000/characters) |
-| 📈 Metrics      | Prometheus metrics       | [`/metrics`](http://localhost:8000/metrics)       |
-| 🩺 Health Check | Service health status    | [`/healthcheck`](http://localhost:8000/healthcheck) |
+| 🧬 API          | Character listing        | [`/characters`](http://localhost/characters) |
+| 📈 Metrics      | Prometheus metrics       | [`/metrics`](http://localhost/metrics)       |
+| 🩺 Health Check | Service health status    | [`/healthcheck`](http://localhost/healthcheck) |
 
 
 ## 📖 API Documentation
 
 API documentation is available at:
 
-- 🔹 [`/docs`](http://localhost:8000/docs) – Swagger UI  
-- 🔹 [`/openapi.json`](http://localhost:8000/openapi.json) – OpenAPI Spec
+- 🔹 [`/docs`](http://172.236.172.53/docs#/) – Swagger UI  
+- 🔹 [`/openapi.json`](http://172.236.172.53/openapi.json) – OpenAPI Spec
 
 ### 📦 Sample Endpoint
 
@@ -177,10 +228,8 @@ Performs checks for:
 
 ```json
 {
-  "status": "healthy",
-  "redis": "ok",
-  "postgres": "ok",
-  "external_api": "ok"
+  "database": true,
+  "redis": true
 }
 ```
 
@@ -189,7 +238,7 @@ Performs checks for:
 
 ### 🔍 Metrics
 
-- Exposed at: `/metrics` (Prometheus format)
+- Exposed at: `https://172.236.172.53/metrics` (Prometheus format)
 - Custom metrics include:
   - `characters_processed_total`
   - `cache_hit_ratio`
@@ -231,7 +280,7 @@ GitHub Actions workflow: `.github/workflows/ci.yml`
 | `cache.ttl`            | 300     | Redis cache TTL in seconds           |
 | `ingress.enabled`      | true    | Enable ingress                       |
 | `resources.limits.cpu` | 500m    | CPU limit                            |
-| `tracing.enabled`      | true    | Enable Jaeger tracing                |
+| `tracing.enabled`      | true    | Enable  OpenTelemetry                |
 
 
 ## 🧪 Testing
@@ -252,3 +301,4 @@ pytest tests/test_api.py
 - 🔐 Uses **Kubernetes Secrets** for managing sensitive environment variables
 - 🛡️ Docker image scanning via **Trivy** integrated in the CI pipeline
 - 📁 `.env.example` is provided; **real secrets are excluded** from the repository
+
