@@ -44,7 +44,7 @@ spec:
             - name: DB_NAME
               value: "rickmorty"
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
-              value: "http://otel-collector.fastapi:4318"
+              value: "http://otel-collector:4318"
         - name: fluentd
           image: fluent/fluentd:v1.14-1
           env:
@@ -56,4 +56,4 @@ spec:
       volumes:
         - name: varlog
           hostPath:
-            path: /var/log
+            path: /
