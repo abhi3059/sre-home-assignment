@@ -344,9 +344,11 @@ $
 ```
 
 
-### HPA Testing for fastapi-app
 
-```
+
+### HPA Testing for fastapi-App
+
+
 1. Check HPA Status
 
 Run the following to confirm the current target CPU and metrics:
@@ -380,12 +382,14 @@ fastapi-app   Deployment/fastapi-app   30%/70%    2         5         2         
 4. Clean-up 
 
 Stop the CPU load after observing scaling:
-
 ```
 Exec in side the pod (fastapi-app-58c88449cd-k9hnt)
 killall yes
-
 ```
+
+
+
+
 
 
 ## 📊 Monitoring & Observability
