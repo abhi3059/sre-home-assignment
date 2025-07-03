@@ -206,6 +206,81 @@ GET /characters?page=1&limit=5&sort=name
 }
 ```
 
+### 🧮 POSTGRES DATABASE
+
+```
+root@localhost:~/sre-home-assignment/manifest/k8s# kubectl get pods -n fastapi
+NAME                             READY   STATUS      RESTARTS   AGE
+postgres-7df87f58f9-vpd6z        1/1     Running     0          3d4h
+root@localhost:~/sre-home-assignment/manifest/k8s#
+
+======== ACCESS POSTGRES DATABASE =========
+
+root@localhost:~/sre-home-assignment/manifest/k8s# kubectl exec -it postgres-7df87f58f9-vpd6z -n fastapi -- bash
+postgres-7df87f58f9-vpd6z:/# psql -U postgres -d rickmorty
+psql (15.13)
+Type "help" for help.
+
+rickmorty=# \dn
+      List of schemas
+  Name  |       Owner
+--------+-------------------
+ public | pg_database_owner
+(1 row)
+
+rickmorty=# \dt public.*
+           List of relations
+ Schema |    Name    | Type  |  Owner
+--------+------------+-------+----------
+ public | characters | table | postgres
+(1 row)
+
+rickmorty=#
+rickmorty=#
+rickmorty=# Select * from characters;
+ id  |      name       | status | species |                   origin
+-----+-----------------+--------+---------+--------------------------------------------
+  37 | Beth Sanchez    | Alive  | Human   | Earth (C-500A)
+  38 | Beth Smith      | Alive  | Human   | Earth (C-137)
+  39 | Beth Smith      | Alive  | Human   | Earth (Evil Rick's Target Dimension)
+   1 | Rick Sanchez    | Alive  | Human   | Earth (C-137)
+   3 | Summer Smith    | Alive  | Human   | Earth (Replacement Dimension)
+   4 | Beth Smith      | Alive  | Human   | Earth (Replacement Dimension)
+   5 | Jerry Smith     | Alive  | Human   | Earth (Replacement Dimension)
+  17 | Annie           | Alive  | Human   | Earth (C-137)
+  45 | Bill            | Alive  | Human   | Earth (C-137)
+  58 | Brad            | Alive  | Human   | Earth (Replacement Dimension)
+  72 | Cool Rick       | Alive  | Human   | Earth (K-83)
+ 166 | Invisi-trooper  | Alive  | Human   | Earth (Replacement Dimension)
+ 169 | Jacob           | Alive  | Human   | Earth (C-137)
+ 170 | Jacqueline      | Alive  | Human   | Earth (Replacement Dimension)
+ 171 | Jaguar          | Alive  | Human   | Earth (Replacement Dimension)
+ 172 | Jamey           | Alive  | Human   | Earth (Replacement Dimension)
+ 174 | Jerry 5-126     | Alive  | Human   | Earth (5-126)
+ 175 | Jerry Smith     | Alive  | Human   | Earth (C-137)
+ 176 | Celebrity Jerry | Alive  | Human   | Earth (C-500A)
+ 177 | Jerry Smith     | Alive  | Human   | Earth (Evil Rick's Target Dimension)
+ 180 | Jessica         | Alive  | Human   | Earth (Replacement Dimension)
+  88 | Cynthia         | Alive  | Human   | Earth (Replacement Dimension)
+  91 | David Letterman | Alive  | Human   | Earth (C-500A)
+ 160 | Hunter's Father | Alive  | Human   | Earth (Giant Telepathic Spiders Dimension)
+ 107 | Dr. Wong        | Alive  | Human   | Earth (Replacement Dimension)
+ 112 | Eric McMan      | Alive  | Human   | Earth (C-137)
+ 115 | Ethan           | Alive  | Human   | Earth (Replacement Dimension)
+ 241 | Mr. Marklovitz  | Alive  | Human   | Earth (C-137)
+ 245 | Mrs. Lipkip     | Alive  | Human   | Earth (Replacement Dimension)
+ 246 | Mrs. Pancakes   | Alive  | Human   | Earth (C-137)
+ 251 | Nancy           | Alive  | Human   | Earth (Replacement Dimension)
+ 255 | Orthodox Jew    | Alive  | Human   | Earth (Replacement Dimension)
+ 288 | Rick D716-B     | Alive  | Human   | Earth (D716-B)
+ 289 | Rick D716-C     | Alive  | Human   | Earth (D716-C)
+ 291 | Rick J-22       | Alive  | Human   | Earth (J-22)
+ 292 | Rick K-22       | Alive  | Human   | Earth (K-22)
+(36 rows)
+
+rickmorty=#
+
+```
 
 ## 🩺 Health Check
 
