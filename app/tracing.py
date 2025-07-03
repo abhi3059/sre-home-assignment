@@ -12,13 +12,11 @@ def setup_tracer(app):
             resource=Resource.create({SERVICE_NAME: "rickmorty-api"})
         )
     )
-
-
+    
     otlp_endpoint = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://localhost:4318")
 
-
     otlp_exporter = OTLPSpanExporter(
-        endpoint=otlp_endpoint
+        endpoint=f"{otlp_endpoint}/v1/traces"
     )
 
     trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(otlp_exporter))
