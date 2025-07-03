@@ -157,9 +157,9 @@ horizontalpodautoscaler.autoscaling/fastapi-app   Deployment/fastapi-app   0%/70
 
 | Endpoint        | Description             | URL                                  |
 |----------------|-------------------------|--------------------------------------|
-| 🧬 API          | Character listing        | [`/characters`](http://localhost/characters) |
-| 📈 Metrics      | Prometheus metrics       | [`/metrics`](http://localhost/metrics)       |
-| 🩺 Health Check | Service health status    | [`/healthcheck`](http://localhost/healthcheck) |
+| 🧬 API          | Character listing        | [`/characters`](http://172.236.172.53/characters)   |
+| 📈 Metrics      | Prometheus metrics       | [`/metrics`](http://172.236.172.53/metrics)         |
+| 🩺 Health Check | Service health status    | [`/healthcheck`](http://172.236.172.53/healthcheck) |
 
 
 ## 📖 API Documentation
@@ -415,7 +415,7 @@ K8S DASHBOARD : http://172.236.172.53:31000/d/24b68a25-8b23-4140-98e7-cef238e14f
 
 #### PROMETHEUS CREDENTIAL
 
-Prometheus URL : http://172.236.172.53:31000/login
+Prometheus URL : http://172.236.172.53:30000/
 ```
 Note : NO CREDENTIAL REQUIRED
 ```
