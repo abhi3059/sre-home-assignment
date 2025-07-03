@@ -51,6 +51,8 @@ spec:
               value: {{ .Values.env.REDIS_PORT | quote }}
             - name: CACHE_TTL
               value: {{ .Values.env.CACHE_TTL | quote }}
+            - name: CI
+              value: {{ .Values.env.CI | quote }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
 

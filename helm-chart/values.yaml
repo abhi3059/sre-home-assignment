@@ -36,6 +36,7 @@ resources:
 
 # Non-sensitive environment config for ConfigMap
 env:
+  CI: ""
   REDIS_HOST: redis
   REDIS_PORT: "6379"
   CACHE_TTL: "3600"

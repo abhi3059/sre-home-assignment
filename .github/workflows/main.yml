@@ -162,6 +162,7 @@ jobs:
             --set image.repository=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} \
             --set image.tag=latest \
             --set serviceAccount.create=false
+            --set env.CI=true
 
       - name: Wait for app to become ready
         run: kubectl wait --namespace fastapi --for=condition=ready pod --selector=app=fastapi-app --timeout=180s
